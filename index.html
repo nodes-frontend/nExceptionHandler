@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<base href="/">
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+
+	</head>
+	<body ng-app="demoApp">
+
+		<n-messages-wrapper></n-messages-wrapper>
+		<!-- bower:js -->
+		<script src="bower_components/angular/angular.js"></script>
+		<script src="bower_components/angular-mocks/angular-mocks.js"></script>
+		<script src="bower_components/angular-scenario/angular-scenario.js"></script>
+		<script src="bower_components/nMessages/dist/nMessages.js"></script>
+		<script src="bower_components/nLogger/dist/nLogger.js"></script>
+		<script src="bower_components/angular-animate/angular-animate.js"></script>
+		<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+		<!-- endbower -->
+
+		<script src="src/nExceptionHandler.module.js"></script>
+		<script src="src/nExceptionHandler.config.js"></script>
+
+		<script>
+			//debug_env stub
+			angular.module('DEBUG_ENV', [])
+					.constant('DEBUG_ENV', true);
+			//ncore stub
+			angular.module('nCore', ['nCore.nLogger', 'nCore.nMessages', 'nCore.nExceptionHandler']);
+
+			angular.module('demoApp', ['nCore'])
+					.run(function($exceptionHandler, $http) {
+						$exceptionHandler('Simple Exception', new Error('Argh'));
+
+						$http.get('http://yolocloud.org')
+								.then(function() {
+									console.log('Hah what');
+								})
+								.catch(function(e) {
+									$exceptionHandler('Async Error', e);
+								})
+					})
+		</script>
+	</body>
+</html>
