@@ -2,11 +2,11 @@
   "name": "nExceptionHandler",
   "version": "1.0.0",
   "description": "Angular Exception Handler, part of the nCore.",
-  "homepage": "https://github.com/nodes-galactic/nExceptionHandler",
+  "homepage": "https://github.com/nodes-frontend/nExceptionHandler",
   "author": "Dennis Haulund Nielsen",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nodes-galactic/nExceptionHandler"
+    "url": "https://github.com/nodes-frontend/nExceptionHandler"
   },
   "main": [
     "dist/nExceptionHandler.js"
@@ -20,7 +20,6 @@
   "devDependencies": {
     "angular-mocks": "*",
     "angular-scenario": "*",
-    "nMessages": "*",
     "nLogger": "*",
     "angular-animate": "*",
     "angular-sanitize": "*"

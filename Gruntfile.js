@@ -150,7 +150,7 @@ module.exports = function (grunt) {
 				banner: '<%= meta.banner %>'
 			},
 			dist: {
-				src: ['.tmp/scripts/*.module.js', '.tmp/scripts/*.config.js'],
+				src: ['.tmp/scripts/*.module.js', '.tmp/scripts/*.provider.js', '.tmp/scripts/*.config.js'],
 				dest: '<%= yeoman.dist %>/<%= pkg.name %>.js'
 			}
 		},
