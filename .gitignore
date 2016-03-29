@@ -1,5 +1,5 @@
 node_modules
-coveralls.yml
+.coveralls.yml
 coverage/
 .tmp
 .sass-cache
