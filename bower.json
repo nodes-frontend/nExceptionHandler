@@ -14,12 +14,8 @@
   "ignore": [
     "demo"
   ],
-  "dependencies": {
-    "angular": "*"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "angular-mocks": "*",
-    "angular-scenario": "*",
     "nLogger": "*",
     "angular-animate": "*",
     "angular-sanitize": "*"

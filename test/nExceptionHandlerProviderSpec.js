@@ -4,7 +4,7 @@ describe('nExceptionHandlerConfig', function() {
 	var nExceptionHandlerConfigProvider;
 
 	beforeEach(function() {
-		module('nCore.nExceptionHandler.config');
+		module('nCore.nExceptionHandler.provider');
 	});
 
 	// What should the feature do?

@@ -1,6 +1,10 @@
 (function () {
 	'use strict';
 
-	angular.module('nCore.nExceptionHandler', ['nCore.nExceptionHandler.config', 'nCore.nLogger']);
+	angular.module('nCore.nExceptionHandler', [
+		'nCore.nExceptionHandler.config',
+		'nCore.nExceptionHandler.provider',
+		'nCore.nLogger'
+	]);
 
 })();

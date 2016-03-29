@@ -1,8 +1,8 @@
-(function () {
-	'use strict';
+(function() {
+	"use strict";
 
 	angular
-		.module('nCore.nExceptionHandler')
+		.module('nCore.nExceptionHandler.config', [])
 		.config(nExceptionHandlerConfig);
 
 	/* @ngInject */
@@ -11,7 +11,7 @@
 	}
 
 	/* @ngInject */
-	function _extendExceptionHandler($delegate, nLogger, nExceptionHandlerConfig) {
+	function _extendExceptionHandler($delegate, $window, nLogger, nExceptionHandlerConfig) {
 		/*jshint validthis: true */
 
 		/**
@@ -29,8 +29,8 @@
 			this.message = message;
 
 			// Use V8's native method if available, otherwise fallback
-			if('captureStackTrace' in Error) {
-				Error.captureStackTrace(this, _nException);
+			if('captureStackTrace' in $window.Error) {
+				$window.Error.captureStackTrace(this, _nException);
 			} else {
 				this.stack = (new Error()).stack;
 			}

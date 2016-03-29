@@ -2,7 +2,7 @@
 	'use strict';
 
 	angular
-		.module('nCore.nExceptionHandler.config', [])
+		.module('nCore.nExceptionHandler.provider', [])
 		.provider('nExceptionHandlerConfig', nExceptionHandlerConfig);
 
 	function nExceptionHandlerConfig() {
