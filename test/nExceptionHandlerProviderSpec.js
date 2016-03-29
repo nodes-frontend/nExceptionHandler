@@ -1,24 +1,24 @@
-describe('nExceptionHandlerConfig', function() {
+describe('nExceptionHandlerConfig', () => {
 
-	var nExceptionHandlerConfig;
-	var nExceptionHandlerConfigProvider;
+	let nExceptionHandlerConfig;
+	let nExceptionHandlerConfigProvider;
 
-	beforeEach(function() {
+	beforeEach(() => {
 		module('nCore.nExceptionHandler.provider');
 	});
 
 	// What should the feature do?
-	it('should return defaults', function() {
+	it('should return defaults', () => {
 
-		inject(['nExceptionHandlerConfig', function(_nExceptionHandlerConfig) {
+		inject(['nExceptionHandlerConfig', (_nExceptionHandlerConfig) => {
 			nExceptionHandlerConfig = _nExceptionHandlerConfig; // to use the instance in other parts
 		}]);
 
 		// What is the actual output?
-		var actual = nExceptionHandlerConfig;
+		const actual = nExceptionHandlerConfig;
 
 		// What is the expected output?
-		var expected = {
+		const expected = {
 			useCustomExceptionHandler: true
 		};
 
@@ -26,42 +26,42 @@ describe('nExceptionHandlerConfig', function() {
 	});
 
 	// What should the feature do?
-	it('should have "configure" function defined', function() {
+	it('should have "configure" function defined', () => {
 
 		// load the provider with module to be able to call its configuration methods
-		module(['nExceptionHandlerConfigProvider', function(_nExceptionHandlerConfigProvider) {
+		module(['nExceptionHandlerConfigProvider', (_nExceptionHandlerConfigProvider) => {
 			nExceptionHandlerConfigProvider = _nExceptionHandlerConfigProvider;
 		}]);
 
-		inject(['nExceptionHandlerConfig', function(_nExceptionHandlerConfig) {
+		inject(['nExceptionHandlerConfig', (_nExceptionHandlerConfig) => {
 			nExceptionHandlerConfig = _nExceptionHandlerConfig; // to use the instance in other parts
 		}]);
 
 		// What is the actual output?
-		var actual = nExceptionHandlerConfigProvider.configure;
+		const actual = nExceptionHandlerConfigProvider.configure;
 
 		// What is the expected output?
 		expect(actual).toEqual( jasmine.any(Function) );
 	});
 
 	// What should the feature do?
-	it('should configure "useCustomExceptionHandler" to false', function() {
+	it('should configure "useCustomExceptionHandler" to false', () => {
 
 		// load the provider with module to be able to call its configuration methods
-		module(['nExceptionHandlerConfigProvider', function(_nExceptionHandlerConfigProvider) {
+		module(['nExceptionHandlerConfigProvider', (_nExceptionHandlerConfigProvider) => {
 			nExceptionHandlerConfigProvider = _nExceptionHandlerConfigProvider; // to use the provider in other parts
 			nExceptionHandlerConfigProvider.configure({useCustomExceptionHandler: false});
 		}]);
 
-		inject(['nExceptionHandlerConfig', function(_nExceptionHandlerConfig) {
+		inject(['nExceptionHandlerConfig', (_nExceptionHandlerConfig) => {
 			nExceptionHandlerConfig = _nExceptionHandlerConfig; // to use the instance in other parts
 		}]);
 
 		// What is the actual output?
-		var actual = nExceptionHandlerConfig;
+		const actual = nExceptionHandlerConfig;
 
 		// What is the expected output?
-		var expected = {
+		const expected = {
 			useCustomExceptionHandler: false
 		};
 
@@ -69,25 +69,21 @@ describe('nExceptionHandlerConfig', function() {
 	});
 
 	// What should the feature do?
-	it('should return defaults, if no config are provided for configure function', function() {
+	it('should return defaults, if no config are provided for configure function', () => {
 
 		// load the provider with module to be able to call its configuration methods
-		module(['nExceptionHandlerConfigProvider', function(_nExceptionHandlerConfigProvider) {
+		module(['nExceptionHandlerConfigProvider', (_nExceptionHandlerConfigProvider) => {
 			nExceptionHandlerConfigProvider = _nExceptionHandlerConfigProvider; // to use the provider in other parts
 
 			// What is the actual output?
-			var actual = nExceptionHandlerConfigProvider.configure();
+			const actual = nExceptionHandlerConfigProvider.configure();
 
 			// What is the expected output?
-			var expected = {};
-
-			expect(actual).toEqual({
+			const expected = {
 				useCustomExceptionHandler: true
-			});
-		}]);
+			};
 
-		inject(['nExceptionHandlerConfig', function(_nExceptionHandlerConfig) {
-			nExceptionHandlerConfig = _nExceptionHandlerConfig; // to use the instance in other parts
+			expect(actual).toEqual(expected);
 		}]);
 	});
 });

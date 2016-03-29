@@ -1,34 +1,43 @@
-describe('nExceptionHandler', function () {
-	var nLogger;
-	var nExceptionHandlerConfig;
-	var $exceptionHandler;
-	var _delegate;
-	var _window;
+describe('nExceptionHandler', () => {
+	let nLogger;
+	let nExceptionHandlerConfig;
+	let $exceptionHandler;
+	let _window;
 
 	// Config
-	var useCustomExceptionHandler;
-	var useNativeStackTrace;
+	let useCustomExceptionHandler;
+	let useNativeStackTrace;
 
-	beforeEach(function() {
-		module(function($provide, $exceptionHandlerProvider) {
+	// Inject function
+	const _inject = () => {
+		inject(['nLogger', 'nExceptionHandlerConfig', '$exceptionHandler', '$window', (_nLogger, _nExceptionHandlerConfig, _$exceptionHandler, $window) => {
+			nExceptionHandlerConfig = _nExceptionHandlerConfig;
+			nLogger 				= _nLogger;
+			$exceptionHandler 		= _$exceptionHandler;
+			_window					= $window;
 
-			$provide.service('nLogger', function() {
+		}]);
+	};
+
+	beforeEach(() => {
+		module(($provide, $exceptionHandlerProvider) => {
+
+			$provide.service('nLogger', () => {
 				return {
 					error: jasmine.createSpy('nLogger.error')
 				};
 			});
 
-			$provide.provider('nExceptionHandlerConfig', function() {
-
-				this.$get = function() {
+			$provide.provider('nExceptionHandlerConfig', class {
+				$get() {
 					return {
 						useCustomExceptionHandler: useCustomExceptionHandler
 					};
-				};
+				}
 			});
 
 			// Toogle availability of captureStackTrace
-			var Error;
+			let Error;
 
 			if(useNativeStackTrace) {
 				Error = {
@@ -48,17 +57,7 @@ describe('nExceptionHandler', function () {
 		module('nCore.nExceptionHandler.config');
 	});
 
-	function _inject() {
-		inject(['nLogger', 'nExceptionHandlerConfig', '$exceptionHandler', '$window', function(_nLogger, _nExceptionHandlerConfig, _$exceptionHandler, $window) {
-			nExceptionHandlerConfig = _nExceptionHandlerConfig;
-			nLogger 				= _nLogger;
-			$exceptionHandler 		= _$exceptionHandler;
-			_window					= $window;
-
-		}]);
-	}
-
-	it('should call nLogger.error, if useCustomExceptionHandler is true', function() {
+	it('should call nLogger.error, if useCustomExceptionHandler is true', () => {
 
 		useCustomExceptionHandler = true;
 
@@ -68,7 +67,7 @@ describe('nExceptionHandler', function () {
 		expect(nLogger.error).toHaveBeenCalled();
 	});
 
-	it('should not call nLogger.error, if useCustomExceptionHandler is false', function() {
+	it('should not call nLogger.error, if useCustomExceptionHandler is false', () => {
 
 		useCustomExceptionHandler = false;
 
@@ -78,7 +77,7 @@ describe('nExceptionHandler', function () {
 		expect(nLogger.error).not.toHaveBeenCalled();
 	});
 
-	it('should use native stacktrace, if available', function() {
+	it('should use native stacktrace, if available', () => {
 
 		useCustomExceptionHandler 	= true;
 		useNativeStackTrace 		= true;
