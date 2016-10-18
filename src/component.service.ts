@@ -38,7 +38,7 @@ namespace component {
     }
 
     angular
-        .module('component')
+        .module('nExceptionHandler')
         .service('ComponentService', ComponentService);
 }
 

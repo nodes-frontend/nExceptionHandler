@@ -28,6 +28,6 @@ namespace component {
     }
 
     angular
-        .module('component')
+        .module('nExceptionHandler')
         .provider('component', ComponentProvider);
 }

@@ -4,7 +4,7 @@ describe('ComponentService', function() {
 
 	beforeEach(function() {
 		angular.module('templates', []);
-		module('component');
+		module('nExceptionHandler');
 	});
 
 	var dummyData 		= [{'ID': 1, 'title': 'dummy 1'}, {'ID': 2, 'title': 'dummy 2'}, {'ID': 3, 'title': 'dummy 3'}];
