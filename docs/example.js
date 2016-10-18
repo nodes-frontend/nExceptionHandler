@@ -9,10 +9,8 @@
 		.module('demoApp')
 		.controller('demoController', function() {
 			var vm = this;
-			vm.testValue = 'Greetings from Angular with custom filter!';
-			vm.controllerMethod = function(message) {
-				console.log(message);
-			};
+			// throw the exception
+			var x = n + 1;
 		});
 	
 })();

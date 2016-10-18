@@ -5,5 +5,5 @@ namespace component {
 		'templates'
 	];
 
-	angular.module('component', dependencies);
+	angular.module('nExceptionHandler', dependencies);
 }
