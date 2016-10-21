@@ -1,9 +1,7 @@
 namespace component {
 	'use strict';
 	
-	const dependencies = [
-		'templates'
-	];
+	const dependencies = [];
 
 	angular.module('nExceptionHandler', dependencies);
 }

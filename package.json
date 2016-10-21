@@ -40,6 +40,7 @@
     "angular-ui-scrollpoint": "^2.1.1",
     "autoprefixer": "6.4.1",
     "babel-preset-es2015": "6.14.0",
+    "bugsnag-js": "^3.0.6",
     "commitizen": "2.8.6",
     "coveralls": "2.11.12",
     "cssnano": "3.7.4",

@@ -1,0 +1,36 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
+<script src="dist/component.js"></script>
+
+<div ng-app="exceptionApp">
+    <div ng-controller="exceptionController as exception">
+        <div class="row">
+            <div class="small-12 columns">
+                <button class="button" ng-click="exception.triggerException()">Trigger Exception</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        var exceptionApp = angular.module('exceptionApp', [
+            'nExceptionHandler'
+        ]);
+        
+        exceptionApp.config(function(exceptionHandlerProvider) {
+            exceptionHandlerProvider.configure({
+                useBugsnag: true,
+                bugsnagConfiguration: {
+                    apiKey: '76281fd4cce7f45ae4a2823b2bf4029a',
+                    releaseStage: 'development'
+                }
+            });
+        });
+        
+        exceptionApp.controller('exceptionController', exceptionCtrl);
+        
+        function exceptionCtrl() {
+            var vm = this;
+            vm.triggerException = function() {
+                var x = n + 1;
+            }
+        }
+    </script>
+</div>
