@@ -47,7 +47,7 @@ module.exports = function(config) {
 				module: 'amd', // (optional) Specify module code generation: 'commonjs' or 'amd'
 				noImplicitAny: true, // (optional) Warn on expressions and declarations with an implied 'any' type.
 				noResolve: true, // (optional) Skip resolution and preprocessing.
-				removeComments: true, // (optional) Do not emit comments to output.
+				removeComments: false, // (optional) Do not emit comments to output.
 				concatenateOutput: false // (optional) Concatenate and emit output to single file. By default true if module option is omited, otherwise false.
 			},
 			// transforming the filenames
@@ -72,12 +72,16 @@ module.exports = function(config) {
 		// test results reporter to use
 		// possible values: 'dots', 'progress'
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: ['progress', 'coverage'],
+		reporters: ['nyan', 'coverage'],
 
 		coverageReporter: {
-			type  : 'lcovonly',
-			dir   : 'coverage/',
-			subdir: '.'
+			reporters: [
+				{
+					type  : 'html',
+					dir   : 'coverage/',
+					subdir: '.'
+				}
+			]
 		},
 
 		// web server port

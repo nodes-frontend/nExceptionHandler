@@ -29,8 +29,6 @@
         <link rel="stylesheet" href="dist/component.css">
         <!-- endbuild -->
     
-        <script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"></script>
-    
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/tomorrow.min.css">
         
         <style>
@@ -45,7 +43,7 @@
         <div class="n-docs-header">
             
             <div headroom offset="330" classes="{pinned: 'n-docs-navbar--pinned', unpinned: 'n-docs-navbar--unpinned', top: 'n-docs-navbar--top'}" class="n-docs-navbar">
-                <canvas n-docs-granim colors="[['#2199e8', '#6433e8'],['#936cfb', '#5abbfc']]" class="n-docs-navbar__gradient"></canvas>
+                <canvas n-docs-granim colors="[['#e74c3c', '#c0392b'],['#e67e22', '#d35400']]" class="n-docs-navbar__gradient"></canvas>
                 
                 <div class="n-docs-navbar__content">
                     <div class="small-6 columns">
@@ -92,22 +90,22 @@
                         <h2>Getting Started</h2>
                     </div>
                     <div class="small-12 columns">
-                        <p class="lead">nDocs Npm Install Guide:</p>
+                        <p class="lead">Install:</p>
                         <n-docs-npm-install-guide></n-docs-npm-install-guide>
                     </div>
                     <div class="small-12 columns">
-                        <p class="lead">nDocs Angular Install Guide:</p>
+                        <p class="lead">Inject:</p>
                         <n-docs-angular-install-guide></n-docs-angular-install-guide>
                     </div>
                     <div class="small-12 columns">
+                        <p class="lead">Configure:</p>
                         <div class="n-docs-angular-install-guide">
 <hljs hljs-interpolate="true">
 .configure(function(nExceptionHandlerProvider) {
     nExceptionHandlerProvider.configure({
         useBugsnag: true,
         bugsnagConfiguration: {
-            apiKey: '76281fd4cce7f45ae4a2823b2bf4029a',
-            releaseStage: 'development'
+            apiKey: 'YOUR_API_KEY'
         }
     });
 });</hljs>
@@ -186,13 +184,6 @@
                 </div>
             </div>
             
-            <!--<div class="n-docs-content__secondary hide-for-small-only">-->
-                <!--<div class="row">-->
-                    <!--<div class="small-12 columns">-->
-                        <!--<n-docs-toc scan="#getStarted"></n-docs-toc>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
         </div>
         
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
@@ -216,122 +207,6 @@
         <script src="lib/ng-Scrollspy.js"></script>
         <script src="nDocs.js"></script>
         <!-- endbuild -->
-    
-<script id="markupExample" type="text/ng-template">
-<!-- setup selection display/input input:text -->
-<p class="lead">
-    selection: <input type="text" ng-model="selection">
-</p>
-            
-<!-- bind scope.selection to ngSelect model -->
-<div class="row example" ng-select="selection" super-directive>
-    <div class="col-xs-12">
-            
-        <!-- five images with number as option value -->
-        <!-- add "selected" class on option selected -->
-        <img class="img-polaroid img-circle"
-            ng-repeat="num in [1, 2, 3, 4, 5] track by $id($index)"
-            ng-src="http://lorempixel.com/100/100/sports/{{ num }}"
-            ng-select-option="{{ num }}"
-            select-class="{'selected': $optSelected}">
-    </div>
-</div>
-</script>
-        
-<script id="javaScriptExample" type="text/ng-template">
-angular.module('nDocs')
-    .service('nDocsGithubService', function($q, $http, $window, GITHUB) {
-        return {
-            getStatistics: getStatistics
-        };
-
-        function getStatistics() {
-
-            var deferred = $q.defer();
-
-            var repoUrl = [
-                GITHUB.URL,
-                GITHUB.NAME,
-                GITHUB.REPOSITORY
-            ].join('/');
-
-            var repoRequest = {
-                method: 'GET',
-                url: repoUrl,
-                cache: true,
-                params: {
-                    client_id: GITHUB.CLIENT_ID,
-                    client_secret: GITHUB.CLIENT_SECRET
-                }
-            };
-
-            var releasesUrl = [
-                GITHUB.URL,
-                GITHUB.NAME,
-                GITHUB.REPOSITORY,
-                'releases',
-                'latest'
-            ].join('/');
-
-            var releasesRequest = {
-                method: 'GET',
-                url: releasesUrl,
-                cache: true,
-                params: {
-                    client_id: GITHUB.CLIENT_ID,
-                    client_secret: GITHUB.CLIENT_SECRET
-                }
-            };
-
-            if(!$window.localStorage.getItem(GITHUB.NAME + '-' + GITHUB.REPOSITORY)) {
-                _getFromGithub().then(function(data) {
-                    deferred.resolve(data);
-                });
-            } else {
-                var localStorageData = JSON.parse($window.localStorage.getItem(GITHUB.NAME + '-' + GITHUB.REPOSITORY));
-                var lastTime = localStorageData.timeStamp;
-
-                // Cache response for 10sec to avoid hitting the quota limits
-                if(new Date().valueOf() - lastTime < 10000) {
-                    deferred.resolve(localStorageData);
-                } else {
-                    _getFromGithub().then(function(data) {
-                        deferred.resolve(data);
-                    });
-            }
-
-        }
-
-        return deferred.promise;
-
-        function _getFromGithub() {
-            return $q.all([$http(repoRequest), $http(releasesRequest)])
-                .then(function(responses) {
-                    var repo = responses[0].data;
-                    var releases = responses[1].data;
-                    
-                    var toStorage = {
-                        timeStamp: new Date().valueOf(),
-                        repoStars: repo.stargazers_count,
-                        repoName: repo.name,
-                        repoUrl: repo.html_url,
-                        releaseName: releases.name,
-                        releaseUrl: releases.html_url
-                    };
-                    
-                    $window.localStorage.setItem(GITHUB.NAME + '-' + GITHUB.REPOSITORY, JSON.stringify(toStorage));
-                    
-                    return toStorage;
-            
-                })
-                .catch(function(response) {
-                    deferred.reject(response);
-                });
-        }
-
-    }
-});
-</script>
 
     </body>
 </html>

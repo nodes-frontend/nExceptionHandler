@@ -35,13 +35,14 @@ namespace nExcptionHandler {
             }
             if(cfg.bugsnagConfiguration && cfg.useBugsnag === true) {
                 if(!cfg.bugsnagConfiguration.apiKey) {
-                    throw 'You need to provide the apiKey for Bugsnag'
+                    throw 'You need to provide the apiKey for Bugsnag';
                 }
             }
 
 
             for(var key in cfg) {
                 if(cfg.hasOwnProperty(key) && key !== 'bugsnagConfiguration') {
+                    /* istanbul ignore else */
                     if(this.config.hasOwnProperty(key)) {
                         this.config[key] = cfg[key];
                     }
@@ -49,7 +50,11 @@ namespace nExcptionHandler {
             }
 
             for(var key in cfg.bugsnagConfiguration) {
+                /* istanbul ignore else */
                 if(cfg.bugsnagConfiguration.hasOwnProperty(key)) {
+                    this.config.bugsnagConfiguration[key] = cfg.bugsnagConfiguration[key];
+
+                    /* istanbul ignore else */
                     if('Bugsnag' in window) {
                         Bugsnag[key] = cfg.bugsnagConfiguration[key];
                     }
@@ -72,12 +77,13 @@ namespace nExcptionHandler {
         exceptionHandler: any
     ) {
         return function(exception: any, cause: any) {
-            var appErrorPrefix = exceptionHandler.config.appErrorPrefix || '';
+            var appErrorPrefix = exceptionHandler.config.appErrorPrefix;
 
             if('Bugsnag' in window && exceptionHandler.config.useBugsnag) {
-                Bugsnag.notifyException(exception, {diagnostics:{cause: cause}});
+                Bugsnag.notifyException(new Error(exception), {diagnostics:{cause: cause}});
             }
 
+            /* istanbul ignore else */
             if(exceptionHandler.config.showCrashTemplateOnException &&
                 angular.isDefined(exceptionHandler.config.crashTemplate) &&
                 exceptionHandler.config.crashTemplate.length > 0
@@ -85,8 +91,20 @@ namespace nExcptionHandler {
                 document.body.innerHTML = exceptionHandler.config.crashTemplate;
             }
 
-            exception.message = appErrorPrefix + exception.message;
-            $delegate(exception, cause);
+            /* istanbul ignore next */
+            if(typeof exception === 'string') {
+                exception = appErrorPrefix + exception;
+            } else {
+                exception.message = appErrorPrefix + exception.message;
+            }
+
+            /* istanbul ignore next */
+            if(cause) {
+                $delegate(exception, cause);
+            } else {
+                $delegate(exception);
+            }
+
         };
     }
 

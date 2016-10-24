@@ -1,3 +1,4 @@
+<script src="//d2wy8f7a9ursnm.cloudfront.net/bugsnag-3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.js"></script>
 <script src="dist/component.js"></script>
 
@@ -5,7 +6,11 @@
     <div ng-controller="exceptionController as exception">
         <div class="row">
             <div class="small-12 columns">
-                <button class="button" ng-click="exception.triggerException()">Trigger Exception</button>
+                <button class="button" ng-click="exception.triggerException()">Cause unhandled exception</button>
+                <button class="button" ng-click="exception.throwException()">Force exception using $exceptionHandler(exception, cause)</button>
+                <button class="button" ng-click="exception.throwNormal()">Force exception using throw 'string'</button>
+                <button class="button" ng-click="exception.throwError()">Force exception using throw new Error('string')</button>
+                <button class="button" ng-click="exception.throwObjectError()">Force exception using $exceptionHandler({message: exception})</button>
             </div>
         </div>
     </div>
@@ -17,6 +22,7 @@
         exceptionApp.config(function(exceptionHandlerProvider) {
             exceptionHandlerProvider.configure({
                 useBugsnag: true,
+                appErrorPrefix: 'demo ',
                 bugsnagConfiguration: {
                     apiKey: '76281fd4cce7f45ae4a2823b2bf4029a',
                     releaseStage: 'development'
@@ -26,11 +32,23 @@
         
         exceptionApp.controller('exceptionController', exceptionCtrl);
         
-        function exceptionCtrl() {
+        function exceptionCtrl($exceptionHandler) {
             var vm = this;
             vm.triggerException = function() {
                 var x = n + 1;
-            }
+            };
+            vm.throwException = function() {
+                $exceptionHandler('A', 'B');
+            };
+            vm.throwNormal = function() {
+                throw 'Horse';
+            };
+            vm.throwError = function() {
+                throw new Error('Cow');
+            };
+            vm.throwObjectError = function() {
+                $exceptionHandler({message: 'Foo'});
+            };
         }
     </script>
 </div>

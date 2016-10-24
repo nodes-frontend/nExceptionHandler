@@ -58,13 +58,17 @@ $__System.register('3', [], function (exports_1, context_1) {
                         }
                         for (var key in cfg) {
                             if (cfg.hasOwnProperty(key) && key !== 'bugsnagConfiguration') {
+                                /* istanbul ignore else */
                                 if (this.config.hasOwnProperty(key)) {
                                     this.config[key] = cfg[key];
                                 }
                             }
                         }
                         for (var key in cfg.bugsnagConfiguration) {
+                            /* istanbul ignore else */
                             if (cfg.bugsnagConfiguration.hasOwnProperty(key)) {
+                                this.config.bugsnagConfiguration[key] = cfg.bugsnagConfiguration[key];
+                                /* istanbul ignore else */
                                 if ('Bugsnag' in window) {
                                     Bugsnag[key] = cfg.bugsnagConfiguration[key];
                                 }
@@ -83,15 +87,24 @@ $__System.register('3', [], function (exports_1, context_1) {
                  */
                 function extendExceptionHandler($delegate, exceptionHandler) {
                     return function (exception, cause) {
-                        var appErrorPrefix = exceptionHandler.config.appErrorPrefix || '';
+                        var appErrorPrefix = exceptionHandler.config.appErrorPrefix;
                         if ('Bugsnag' in window && exceptionHandler.config.useBugsnag) {
-                            Bugsnag.notifyException(exception, { diagnostics: { cause: cause } });
+                            Bugsnag.notifyException(new Error(exception), { diagnostics: { cause: cause } });
                         }
+                        /* istanbul ignore else */
                         if (exceptionHandler.config.showCrashTemplateOnException && angular.isDefined(exceptionHandler.config.crashTemplate) && exceptionHandler.config.crashTemplate.length > 0) {
                             document.body.innerHTML = exceptionHandler.config.crashTemplate;
                         }
-                        exception.message = appErrorPrefix + exception.message;
-                        $delegate(exception, cause);
+                        if (typeof exception === 'string') {
+                            exception = appErrorPrefix + exception;
+                        } else {
+                            exception.message = appErrorPrefix + exception.message;
+                        }
+                        if (cause) {
+                            $delegate(exception, cause);
+                        } else {
+                            $delegate(exception);
+                        }
                     };
                 }
                 nExcptionHandler.extendExceptionHandler = extendExceptionHandler;

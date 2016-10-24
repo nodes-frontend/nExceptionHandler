@@ -11,6 +11,7 @@
     "serve:dev": "node ./node_modules/gulp/bin/gulp build && lite-server -c browsersync.dev.config.js | node ./node_modules/gulp/bin/gulp watch",
     "serve:build": "node ./node_modules/gulp/bin/gulp build && lite-server -c browsersync.build.config.js | node ./node_modules/gulp/bin/gulp watch",
     "serve:docs": "node ./node_modules/gulp/bin/gulp build && lite-server -c browsersync.docs.config.js | node ./node_modules/gulp/bin/gulp watch",
+    "serve:coverage": "npm run test && lite-server -c browsersync.coverage.config.js",
     "serve": "npm run serve:dev",
     "jscs": "npm run jscs src/*",
     "setup": "jspm install && typings install",
@@ -61,15 +62,17 @@
     "gulp-useref": "^3.1.2",
     "headroom.js": "^0.9.3",
     "highlightjs-line-numbers.js": "^1.1.0",
+    "istanbul": "^0.4.5",
     "jasmine-core": "2.5.0",
     "jscs": "^3.0.3",
     "jspm": "0.16.45",
     "karma": "1.2.0",
     "karma-babel-preprocessor": "6.0.1",
     "karma-chrome-launcher": "2.0.0",
-    "karma-coverage": "1.1.1",
+    "karma-coverage": "^1.1.1",
     "karma-jasmine": "1.0.2",
     "karma-ng-html2js-preprocessor": "^1.0.0",
+    "karma-nyan-reporter": "^0.2.4",
     "karma-phantomjs-launcher": "1.0.2",
     "karma-typescript-preprocessor": "0.2.1",
     "lite-server": "^2.2.0",
@@ -86,7 +89,6 @@
       "path": "node_modules/cz-conventional-changelog"
     },
     "ghooks": {
-      "pre-commit": "npm run test",
       "commit-msg": "./node_modules/.bin/validate-commit-msg"
     },
     "validate-commit-msg": {
