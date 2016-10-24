@@ -95,11 +95,13 @@ $__System.register('3', [], function (exports_1, context_1) {
                         if (exceptionHandler.config.showCrashTemplateOnException && angular.isDefined(exceptionHandler.config.crashTemplate) && exceptionHandler.config.crashTemplate.length > 0) {
                             document.body.innerHTML = exceptionHandler.config.crashTemplate;
                         }
+                        /* istanbul ignore next */
                         if (typeof exception === 'string') {
                             exception = appErrorPrefix + exception;
                         } else {
                             exception.message = appErrorPrefix + exception.message;
                         }
+                        /* istanbul ignore next */
                         if (cause) {
                             $delegate(exception, cause);
                         } else {
