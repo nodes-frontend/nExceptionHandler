@@ -2,20 +2,7 @@
 
 (["1"], [], false, function($__System) {
 var require = this.require, exports = this.exports, module = this.module;
-$__System.register("2", [], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    return {
-        setters: [],
-        execute: function () {
-            exports_1("default", angular.module("templates", []).run(["$templateCache", function ($templateCache) {
-                $templateCache.put('src/unique-component-template-name.html', '<div class="component">\n    <button class="button success" ng-click="ComponentDirective.event({message: \'from directive\'})">Trigger outside method (controller)</button>\n    <p>\n        Data from the outside: {{ComponentDirective.data}}\n    </p>\n    <p>\n        Internal directive data: {{internalValue}}\n        <button class="button" ng-click="internalDirectiveMethod()">Trigger internal method</button>\n    </p>\n</div>');
-            }]));
-        }
-    };
-});
-$__System.register('3', [], function (exports_1, context_1) {
+$__System.register('2', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
@@ -27,193 +14,115 @@ $__System.register('3', [], function (exports_1, context_1) {
             (function (component) {
                 'use strict';
 
-                var dependencies = ['templates'];
-                angular.module('component', dependencies);
+                var dependencies = [];
+                angular.module('nExceptionHandler', dependencies);
             })(component || (component = {}));
         }
     };
 });
-$__System.register('4', [], function (exports_1, context_1) {
+/// <reference path="../node_modules/bugsnag-js/src/bugsnag.d.ts" />
+$__System.register('3', [], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
-    var component;
+    var nExcptionHandler;
     return {
         setters: [],
         execute: function () {
-            var component;
-            (function (component) {
-                config.$inject = ['componentProvider'];
-                function config(componentProvider) {
-                    componentProvider.configure({ test: 'Testing Configure Function' });
-                }
-                angular.module('component').config(config);
-            })(component || (component = {}));
-        }
-    };
-});
-$__System.register('5', [], function (exports_1, context_1) {
-    "use strict";
+            var nExcptionHandler;
+            (function (nExcptionHandler) {
+                'use strict';
 
-    var __moduleName = context_1 && context_1.id;
-    var component;
-    return {
-        setters: [],
-        execute: function () {
-            var component;
-            (function (component) {
-                var ComponentProvider = function () {
-                    function ComponentProvider() {
+                var ExceptionHandlerProvider = function () {
+                    function ExceptionHandlerProvider() {
                         var _this = this;
                         this.config = {
-                            debug: true
+                            appErrorPrefix: undefined,
+                            useBugsnag: false,
+                            bugsnagConfiguration: {},
+                            showCrashTemplateOnException: true,
+                            crashTemplate: ['<div style="width:100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #f7f7f7;">', '<h3>Error</h3>', '<p>Sorry, something went wrong.</p>', '<button style="color: rgb(17, 85, 204); font-size: 14px;" onclick="window.location.reload()">Reload</button>', '</div>'].join('')
                         };
                         this.$get = function () {
                             return { config: _this.config };
                         };
                     }
-                    ComponentProvider.prototype.configure = function (config) {
-                        if (!arguments[0]) {
-                            return this.config;
-                        } else {
-                            angular.extend(this.config, config);
+                    ExceptionHandlerProvider.prototype.configure = function (cfg) {
+                        if (!cfg.bugsnagConfiguration && cfg.useBugsnag === true) {
+                            throw 'You need to provide a Bugsnag Configration to use Bugsnag :-)';
+                        }
+                        if (cfg.bugsnagConfiguration && cfg.useBugsnag === true) {
+                            if (!cfg.bugsnagConfiguration.apiKey) {
+                                throw 'You need to provide the apiKey for Bugsnag';
+                            }
+                        }
+                        for (var key in cfg) {
+                            if (cfg.hasOwnProperty(key) && key !== 'bugsnagConfiguration') {
+                                /* istanbul ignore else */
+                                if (this.config.hasOwnProperty(key)) {
+                                    this.config[key] = cfg[key];
+                                }
+                            }
+                        }
+                        for (var key in cfg.bugsnagConfiguration) {
+                            /* istanbul ignore else */
+                            if (cfg.bugsnagConfiguration.hasOwnProperty(key)) {
+                                this.config.bugsnagConfiguration[key] = cfg.bugsnagConfiguration[key];
+                                /* istanbul ignore else */
+                                if ('Bugsnag' in window) {
+                                    Bugsnag[key] = cfg.bugsnagConfiguration[key];
+                                }
+                            }
                         }
                     };
-                    ComponentProvider.$inject = [];
-                    return ComponentProvider;
+                    return ExceptionHandlerProvider;
                 }();
-                component.ComponentProvider = ComponentProvider;
-                angular.module('component').provider('component', ComponentProvider);
-            })(component || (component = {}));
+                nExcptionHandler.ExceptionHandlerProvider = ExceptionHandlerProvider;
+                extendExceptionHandler.$inject = ['$delegate', 'exceptionHandler'];
+                /**
+                 * Extend the $exceptionHandler service to also display a toast.
+                 * @param  {Object} $delegate
+                 * @param  {Object} exceptionHandler
+                 * @return {Function} the decorated $exceptionHandler service
+                 */
+                function extendExceptionHandler($delegate, exceptionHandler) {
+                    return function (exception, cause) {
+                        var appErrorPrefix = exceptionHandler.config.appErrorPrefix;
+                        if ('Bugsnag' in window && exceptionHandler.config.useBugsnag) {
+                            Bugsnag.notifyException(new Error(exception), { diagnostics: { cause: cause } });
+                        }
+                        /* istanbul ignore else */
+                        if (exceptionHandler.config.showCrashTemplateOnException && angular.isDefined(exceptionHandler.config.crashTemplate) && exceptionHandler.config.crashTemplate.length > 0) {
+                            document.body.innerHTML = exceptionHandler.config.crashTemplate;
+                        }
+                        if (typeof exception === 'string') {
+                            exception = appErrorPrefix + exception;
+                        } else {
+                            exception.message = appErrorPrefix + exception.message;
+                        }
+                        if (cause) {
+                            $delegate(exception, cause);
+                        } else {
+                            $delegate(exception);
+                        }
+                    };
+                }
+                nExcptionHandler.extendExceptionHandler = extendExceptionHandler;
+                config.$inject = ['$provide'];
+                function config($provide) {
+                    $provide.decorator('$exceptionHandler', extendExceptionHandler);
+                }
+                angular.module('nExceptionHandler').provider('exceptionHandler', ExceptionHandlerProvider).config(config);
+            })(nExcptionHandler || (nExcptionHandler = {}));
         }
     };
 });
-$__System.register('6', [], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var component;
-    return {
-        setters: [],
-        execute: function () {
-            var component;
-            (function (component) {
-                'use strict';
-
-                var ComponentFilter = function () {
-                    function ComponentFilter() {}
-                    ComponentFilter.instance = function () {
-                        return new ComponentFilter().filterFn;
-                    };
-                    ComponentFilter.prototype.filterFn = function (input) {
-                        return input ? input + '\u2713' : '\u2718';
-                    };
-                    ComponentFilter.$inject = [];
-                    return ComponentFilter;
-                }();
-                component.ComponentFilter = ComponentFilter;
-                angular.module('component').filter('componentFilter', ComponentFilter.instance);
-            })(component || (component = {}));
-        }
-    };
-});
-$__System.register('7', [], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var component;
-    return {
-        setters: [],
-        execute: function () {
-            var component;
-            (function (component) {
-                'use strict';
-
-                var ComponentService = function () {
-                    function ComponentService() {
-                        this.data = [{
-                            'ID': 1,
-                            'title': 'dummy 1'
-                        }, {
-                            'ID': 2,
-                            'title': 'dummy 2'
-                        }, {
-                            'ID': 3,
-                            'title': 'dummy 3'
-                        }];
-                    }
-                    ComponentService.prototype.index = function () {
-                        return this.data;
-                    };
-                    ComponentService.prototype.byID = function (ID) {
-                        return this.data.filter(function (item) {
-                            return item.ID === ID;
-                        })[0];
-                    };
-                    ComponentService.$inject = [];
-                    return ComponentService;
-                }();
-                angular.module('component').service('ComponentService', ComponentService);
-            })(component || (component = {}));
-        }
-    };
-});
-$__System.register('8', [], function (exports_1, context_1) {
-    "use strict";
-
-    var __moduleName = context_1 && context_1.id;
-    var component;
-    return {
-        setters: [],
-        execute: function () {
-            var component;
-            (function (component) {
-                'use strict';
-
-                var ComponentDirective = function () {
-                    function ComponentDirective() {
-                        this.bindToController = true;
-                        this.link = this.linkFn;
-                        this.controller = ComponentDirectiveController;
-                        this.restrict = 'EA';
-                        this.templateUrl = 'src/unique-component-template-name.html';
-                        this.controllerAs = 'ComponentDirective';
-                        this.scope = {
-                            event: '&onEvent',
-                            data: '='
-                        };
-                    }
-                    ComponentDirective.instance = function () {
-                        return new ComponentDirective();
-                    };
-                    ComponentDirective.prototype.linkFn = function (scope, element, attrs) {
-                        scope.internalValue = true;
-                        scope.internalDirectiveMethod = function () {
-                            scope.internalValue = !scope.internalValue;
-                        };
-                    };
-                    ComponentDirective.$inject = [];
-                    return ComponentDirective;
-                }();
-                var ComponentDirectiveController = function () {
-                    function ComponentDirectiveController(ComponentService) {
-                        this.ComponentService = ComponentService;
-                        console.log('Injected service:', this.ComponentService.index());
-                    }
-                    ComponentDirectiveController.$inject = ['ComponentService'];
-                    return ComponentDirectiveController;
-                }();
-                angular.module('component').directive('componentDirective', ComponentDirective.instance);
-            })(component || (component = {}));
-        }
-    };
-});
-$__System.register('1', ['2', '3', '4', '5', '6', '7', '8'], function (exports_1, context_1) {
+$__System.register('1', ['2', '3'], function (exports_1, context_1) {
     "use strict";
 
     var __moduleName = context_1 && context_1.id;
     return {
-        setters: [function (_1) {}, function (_2) {}, function (_3) {}, function (_4) {}, function (_5) {}, function (_6) {}, function (_7) {}],
+        setters: [function (_1) {}, function (_2) {}],
         execute: function () {}
     };
 });
